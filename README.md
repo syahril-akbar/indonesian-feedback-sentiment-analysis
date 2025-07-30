@@ -13,20 +13,22 @@ Alur kerja yang diimplementasikan dalam notebook `sentiment_analysis.ipynb` adal
 1.  **Pemuatan Data**: Memuat data ulasan dari file `kritik_saran.xlsx`.
 2.  **Pra-pemrosesan Data**:
     *   Mengubah semua teks menjadi string.
-    *   Menghilangkan *stopwords* (kata-kata umum seperti "yang", "di", "dan") dalam bahasa Indonesia menggunakan library Sastrawi.
-    *   Mengubah teks menjadi representasi numerik menggunakan **TF-IDF Vectorization**.
-3.  **Filter Relevansi**: Memisahkan ulasan yang dianggap relevan dan tidak relevan berdasarkan skor TF-IDF dan jumlah kata. Ulasan yang tidak relevan disimpan dalam `ulasan_tidak_relevan.xlsx`.
+    *   **Stemming**: Mengubah kata menjadi bentuk dasarnya (misal: "mempelajari" -> "ajar") menggunakan Sastrawi.
+    *   **Stopword Removal**: Menghilangkan kata-kata umum (misal: "yang", "di", "dan") menggunakan Sastrawi.
+    *   **TF-IDF Vectorization**: Mengubah teks menjadi representasi numerik yang merefleksikan pentingnya sebuah kata dalam dokumen.
+3.  **Filter Relevansi**: Memisahkan ulasan yang dianggap relevan dan tidak relevan berdasarkan skor TF-IDF dan jumlah kata. Ulasan yang relevan disimpan di `ulasan_relevan.xlsx` dan yang tidak relevan di `ulasan_tidak_relevan.xlsx`.
 4.  **Clustering (K-Means)**:
-    *   Menggunakan ulasan yang relevan, program menerapkan K-Means untuk menemukan pola dan mengelompokkan ulasan ke dalam 2 klaster utama.
+    *   **Reduksi Dimensi**: Menggunakan **TruncatedSVD** untuk mengurangi kompleksitas data TF-IDF sebelum clustering.
+    *   **K-Means**: Menerapkan K-Means pada data yang telah direduksi untuk menemukan pola dan mengelompokkan ulasan ke dalam 2 klaster utama.
     *   Hasil analisis kata kunci pada tiap klaster menghasilkan label:
-        *   **Klaster 0: Kritik dan Harapan** (fokus pada fasilitas, ruangan, jaringan).
-        *   **Klaster 1: Saran dan Pujian** (fokus pada materi, pengajar, dan apresiasi).
+        *   **Klaster 0: Kritik dan Harapan** (kata kunci: 'lebih', 'baik', 'kurang', 'ruang', 'makan', 'fasilitas').
+        *   **Klaster 1: Saran dan Pujian** (kata kunci: 'materi', 'ajar', 'paham', 'jelas', 'mudah', 'sangat').
     *   Hasil akhir dari proses clustering disimpan dalam file `hasil_klaster_teks_asli.xlsx`.
 5.  **Pelatihan Model Klasifikasi (Naive Bayes)**:
-    *   Data yang sudah dilabeli dari hasil clustering digunakan untuk melatih model Naive Bayes.
+    *   Data berlabel dari hasil clustering digunakan untuk melatih model klasifikasi **Multinomial Naive Bayes**.
     *   Tujuannya adalah agar model dapat memprediksi kategori sentimen dari ulasan baru secara otomatis.
-6.  **Evaluasi Model**: Model dievaluasi menggunakan data uji dan mencapai **akurasi sekitar 89%**.
-7.  **Penyimpanan Model**: Model Naive Bayes dan TF-IDF Vectorizer yang telah dilatih disimpan ke dalam file `Model_NB.pkl` untuk penggunaan di masa depan.
+6.  **Evaluasi Model**: Model dievaluasi menggunakan data uji dan mencapai **akurasi sekitar 91%**.
+7.  **Penyimpanan Model**: Model Naive Bayes dan TF-IDF Vectorizer yang telah dilatih disimpan ke dalam file `Model_NB.pkl` menggunakan `joblib` untuk penggunaan di masa depan.
 
 ---
 
@@ -34,9 +36,9 @@ Alur kerja yang diimplementasikan dalam notebook `sentiment_analysis.ipynb` adal
 
 *   **Python 3**
 *   **Jupyter Notebook**
-*   **Scikit-learn**: Untuk implementasi TF-IDF, K-Means, Naive Bayes, dan evaluasi model.
+*   **Scikit-learn**: Untuk implementasi TF-IDF, TruncatedSVD, K-Means, Naive Bayes, dan evaluasi model.
 *   **Pandas**: Untuk manipulasi dan analisis data.
-*   **Sastrawi**: Untuk proses penghapusan *stopwords* bahasa Indonesia.
+*   **Sastrawi**: Untuk proses *stemming* dan penghapusan *stopwords* bahasa Indonesia.
 *   **Numpy**: Untuk komputasi numerik.
 *   **Matplotlib**: Untuk visualisasi data.
 *   **Joblib**: Untuk menyimpan dan memuat model.
