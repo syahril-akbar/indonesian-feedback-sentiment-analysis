@@ -70,4 +70,8 @@ ENV/
 .idea/
 *.swp
 
+# File teks
 *.txt
+
+# Direktori hasil dan pembahasan
+hasil_dan_pembahasan/
